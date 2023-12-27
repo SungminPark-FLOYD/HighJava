@@ -17,8 +17,8 @@ public class Hotel {
           (Map의 key값은 방번호로 하고 value값은 Room의 인스턴스로 한다.)
           HotelTest 생성자에서는 방번호와 방종류를 초기화한다.
           Map에 방 정보를 미리 등록한다.*/
-    Map<Integer, Room> roomList;
-    Scanner sc;
+    private Map<Integer, Room> roomList;
+    private Scanner sc;
     int[] singleRoom = new int[]{201, 202, 203, 204, 205, 206, 207, 208, 208};
     int[] doubleRoom = new int[]{301, 302, 303, 304, 305, 306, 307, 308, 308};
     int[] suiteRoom = new int[]{401, 402, 403, 404, 405, 406, 407, 408, 409};
@@ -34,6 +34,21 @@ public class Hotel {
         for(int suite : suiteRoom) {
             roomList.put(suite, new Room(suite, "스위트룸", "-"));
         }
+
+
+//         방번호 초기화
+//        for(int i = 2; i <= 4; i++) {
+//            String type = null;
+//            if(i == 2) { type = "싱글룸"; }
+//            else if(i == 3) { type = "더블룸"; }
+//            else if(i == 4) { type = "스위트룸"; }
+//
+//            for(int j = 1; j<=9; j++) {
+//                int num = i*100 + j;    //방번호
+//                roomList.put(num, new Room(num, type));
+//            }
+//        }
+
         sc = new Scanner(System.in);
     }
     public static void main(String[] args) {
