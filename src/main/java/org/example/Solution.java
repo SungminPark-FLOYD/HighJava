@@ -11,62 +11,50 @@ public class Solution {
     }
 
     public static int solution(int[] bandage, int health, int[][] attacks) {
-        int currentTime = 0;
-        int consecutiveTime = 0;
-        int currentHealth = health;
+        int castTime = bandage[0]; // 시전 시간
+        int healingPerSecond = bandage[1]; // 초당 회복량
+        int additionalHealing = bandage[2]; // 추가 회복량
 
-        for (int[] attack : attacks) {
-            int attackTime = attack[0];
-            int damage = attack[1];
+        int maxHealth = health; // 최대 체력
 
-            // 몬스터의 공격 시간까지 붕대 감기를 시전
-            while (currentTime < attackTime) {
-                // 붕대 감기 중인 경우
-                if (consecutiveTime > 0) {
-                    currentHealth += bandage[1]; // 1초당 회복
-                    consecutiveTime--;
+        int preAttackTime = attacks[0][0]; // 이전 공격 시간
+        int consecutiveTime = 0; // 연속 성공 시간
+
+        // attacks 순회 (attacks의 길이만큼)
+        for (int i = 0; i < attacks.length; i++) {
+            int attackTime = attacks[i][0]; // 공격 시간
+            int damage = attacks[i][1]; // 피해량
+
+            // (현재 공격 시간 - 이전 공격 시간)의 텀 동안에 체력 회복
+            int timeBetween = attackTime - preAttackTime - 1;
+            if (timeBetween > 0) {
+                health += (timeBetween * healingPerSecond); // 초당 회복
+
+                // 추가 회복을 연속 성공 시간에 기반하여 계산
+                health += Math.min((timeBetween / castTime) * additionalHealing, consecutiveTime * additionalHealing);
+
+                if (health > maxHealth) {
+                    health = maxHealth;
                 }
-
-                // 캐릭터의 체력이 최대 체력을 초과하지 않도록 조정
-                currentHealth = Math.min(currentHealth, health);
-
-                // 캐릭터가 체력이 0 이하가 되면 즉시 종료
-                if (currentHealth <= 0) {
-                    return -1;
-                }
-
-                currentTime++;
             }
 
-            // 몬스터의 공격을 받아서 붕대 감기가 취소됨
-            currentHealth -= damage;
+            // 체력에 데미지(피해량) 적용
+            health -= damage;
 
-            // 캐릭터의 체력이 0 이하가 되면 즉시 종료
-            if (currentHealth <= 0) {
+            // 체력이 0이하 일 시 -1 반환
+            if (health <= 0) {
                 return -1;
             }
 
-            // 붕대 감기 시전 시간과 연속 성공 시간 초기화
-            currentTime++;
-            consecutiveTime = bandage[0] - 1;
+            // 연속 성공 시간 갱신
+            consecutiveTime = (attackTime - preAttackTime == 1) ? consecutiveTime + 1 : 0;
+
+            // 이전 시간 공격
+            preAttackTime = attackTime;
         }
 
-        // 남은 시간 동안 붕대 감기를 시전
-        while (consecutiveTime > 0) {
-            currentHealth += bandage[1]; // 1초당 회복
-            consecutiveTime--;
-
-            // 캐릭터의 체력이 최대 체력을 초과하지 않도록 조정
-            currentHealth = Math.min(currentHealth, health);
-
-            // 캐릭터가 체력이 0 이하가 되면 즉시 종료
-            if (currentHealth <= 0) {
-                return -1;
-            }
-
-            currentTime++;
-        }
-
-        return currentHealth;
+        // 남은 체력 반환
+        return health;
     }
 }
+
