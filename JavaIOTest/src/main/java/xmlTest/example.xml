@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><catalog>
+<!--    & < > " '-->
     <book id="bk101">
         <author>Gambardella, Matthew</author>
         <title>XML Developer's Guide</title>
@@ -116,4 +117,4 @@
             integrated into a comprehensive development
             environment.</description>
     </book>
-<book id="bk113"><author>남궁성</author><title>자바의정석</title><genre>IT</genre><price>9.99</price><publish_date>2024-01-05</publish_date><description>자바의 모든것</description></book></catalog>
+<book id="bk113"><author>남궁성</author><title>자바의정석</title><genre>IT</genre><price>9.99</price><publish_date>2024-01-05</publish_date><description>자바의 모든것</description></book><book id="bk113"><author>남궁성</author><title>자바의정석</title><genre>IT</genre><price>9.99</price><publish_date>2024-01-05</publish_date><description>자바의 모든것</description></book></catalog>
