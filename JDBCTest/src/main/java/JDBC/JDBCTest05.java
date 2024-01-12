@@ -1,5 +1,7 @@
 package JDBC;
 
+import Util.DBUtil;
+
 import java.sql.*;
 import java.util.Scanner;
 
@@ -19,22 +21,37 @@ public class JDBCTest05 {
         Statement stmt = null;
         PreparedStatement psmt = null;
         ResultSet rs = null;
-        String lprodGu = "";
+
         try {
 
-            Class.forName("oracle.jdbc.driver.OracleDriver");
-            conn = DriverManager.getConnection(
-                    "jdbc:oracle:thin:@localhost:1521:xe",
-                    "FLOYD",
-                    "java"
-            );
+//            Class.forName("oracle.jdbc.driver.OracleDriver");
+//            conn = DriverManager.getConnection(
+//                    "jdbc:oracle:thin:@localhost:1521:xe",
+//                    "FLOYD",
+//                    "java"
+//            );
+            conn = DBUtil.getConnection();
+
+
+//            Lprod_id는 현재의 Lprod_id들 중에서 제일 큰 값보다 1 크게 한다.
+//            String max = "select MAX(LPROD_ID)+1 maxnum from LPROD";
+//            psmt = conn.prepareStatement(max);
+//            rs = psmt.executeQuery();
+//            int maxNum = 0;
+//            if(rs.next()){
+//                maxNum = rs.getInt("maxnum");
+//            }
+//            maxNum++;
+            //혹시 덮어 쓰일수 있느지 다쓰고 닫아준다.
+//            if(psmt != null) psmt.close();
+
 
             String idChk = "select count(*) from LPROD where LPROD_GU = ?";
             psmt = conn.prepareStatement(idChk);
-
+            String lprodGu = "";
             boolean ok = false;
             while (!ok) {
-                System.out.print("Lprod_gu 입력(exP101) >> ");
+                System.out.print("상품 분류 코드 입력(exP101) >> ");
                 lprodGu = sc.next();
                 psmt.setString(1, lprodGu);
                 rs = psmt.executeQuery();
@@ -49,6 +66,7 @@ public class JDBCTest05 {
             String lprodNm = sc.next();
 
             //데이터 추가
+            //lprod_id는 테이블에 값이 하나도 없을 경우를 대비해 따로 빼서 계산한다.
             String sql = "insert into lprod (LPROD_ID, LPROD_GU, LPROD_NM)" +
                     "    values ((select MAX(LPROD_ID)+1 " +
                     "                  from LPROD), ?, ?)";
@@ -57,9 +75,12 @@ public class JDBCTest05 {
             psmt.setString(1, lprodGu);
             psmt.setString(2, lprodNm);
 
-            psmt.executeUpdate();
+            int cnt = psmt.executeUpdate();
 
-            System.out.println("데이터 입력 성공!");
+
+            if (cnt > 0) {
+                System.out.println("데이터 입력 성공!");
+            }else System.out.println("데이터 입력 실패!");
 
             String listSql = "select * from lprod ";
             psmt = conn.prepareStatement(listSql);
@@ -74,9 +95,7 @@ public class JDBCTest05 {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } finally {
+        }  finally {
             if (rs != null) try {
                 rs.close();
             } catch (SQLException e) {
