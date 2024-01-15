@@ -1,6 +1,7 @@
 package JDBC;
 
 import Util.DBUtil;
+import Util.DBUtil2;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -36,15 +37,7 @@ public class JDBCTest07 {
 
     public void mainMenu() {
         while (true) {
-            System.out.println("== 회원 관리 프로그램 ==");
-            System.out.println("        1. 회원 정보 추가     ");
-            System.out.println("        2. 회원 정보 삭제     ");
-            System.out.println("        3. 회원 정보 수정     ");
-            System.out.println("        4. 전체 회원 정보 출력 ");
-            System.out.println("        0. 작업 끝       ");
-
-            System.out.print("메뉴 번호 입력 >> ");
-            int sel = sc.nextInt();
+            int sel = displayMenu();
             switch (sel) {
                 case 1:
                     insert();
@@ -58,6 +51,9 @@ public class JDBCTest07 {
                 case 4:
                     select();
                     break;
+                case 5:
+                    selUpdate();
+                    break;
                 case 0:
                     System.out.println("프로그램 종료...");
                     return;
@@ -69,13 +65,143 @@ public class JDBCTest07 {
 
     }
 
+    private void selUpdate() {
+        System.out.println("== 회원 정보 수정 페이지 ==");
+        select();
+        System.out.println("수정할 회원 아이디를 입력하세요");
+        //회원아이디 중복 체크
+        String memId = null;
+        while (true) {
+            System.out.print("회원 아이디 >> ");
+            memId = sc.next();
+            if(!idChk(memId)) {
+                System.out.println("존재하는 아이디 입니다.");
+                break;
+            }else System.out.println("존재하지 않는 아이디입니다.");
+        }
+
+
+        int sel = editMenu();
+        MyMember myMember = new MyMember();
+        myMember.setMemId(memId);
+        switch (sel){
+            case 1:
+                System.out.print("비밀번호 입력");
+                String memPass = sc.next();
+                myMember.setMemPass(memPass);
+                editMem(myMember, sel);
+                break;
+            case 2:
+                System.out.print("이름 입력");
+                String memName = sc.next();
+                myMember.setMemName(memName);
+                editMem(myMember, sel);
+                break;
+            case 3:
+                System.out.print("전화번호 입력");
+                String memTel = sc.next();
+                myMember.setMemTel(memTel);
+                editMem(myMember, sel);
+                break;
+            case 4:
+                sc.nextLine();
+                System.out.print("주소 입력");
+                String memAddr = sc.nextLine();
+                myMember.setMemAddr(memAddr);
+                editMem(myMember, sel);
+                break;
+            default:
+                System.out.println("다시 입력해 주세요");
+        }
+    }
+
+
+    /*
+    String fileName과 String updateData 필드를 선언 후 선택번호에 따라 값을 부여한 후에
+    쿼리문에 그대로 적용하는 방법도 있다
+    String sql = "update mymember " + fileName + " = ? where mem_id = ? ";
+
+    */
+
+    private void editMem(MyMember myMember, int sel) {
+        try{
+            conn = DBUtil.getConnection();
+
+            String sql = " update MYMEMBER set ";
+            if(sel == 1){
+                sql += " MEM_PASS = ?  where mem_id = ? ";
+                pstmt = conn.prepareStatement(sql);
+                pstmt.setString(1, myMember.getMemPass());
+                pstmt.setString(2, myMember.getMemId());
+            } else if (sel == 2) {
+                sql += " MEM_NAME = ? where MEM_ID = ? ";
+                pstmt = conn.prepareStatement(sql);
+                pstmt.setString(1, myMember.getMemName());
+                pstmt.setString(2, myMember.getMemId());
+            } else if (sel == 3) {
+                sql += " MEM_TEL = ? where MEM_ID = ? ";
+                pstmt = conn.prepareStatement(sql);
+                pstmt.setString(1, myMember.getMemTel());
+                pstmt.setString(2, myMember.getMemId());
+            } else if (sel == 4) {
+                sql += " MEM_ADDR = ? where MEM_ID = ? ";
+                pstmt = conn.prepareStatement(sql);
+                pstmt.setString(1, myMember.getMemAddr());
+                pstmt.setString(2, myMember.getMemId());
+            }
+
+            int cnt = pstmt.executeUpdate();
+
+            if(cnt > 0) System.out.println("회원 업데이트 성공!!");
+            else System.out.println("회원 업데이트 실패~~~");
+
+
+
+        }catch (SQLException e){
+            e.printStackTrace();
+        } finally {
+            if (pstmt!=null) try{pstmt.close();}catch (SQLException e) {}
+            if (conn!=null) try{conn.close();}catch (SQLException e) {}
+        }
+    }
+
+
+    private int editMenu() {
+        System.out.println("== 수정 항목 선택 ==");
+        System.out.println("        1. 비밀번호     ");
+        System.out.println("        2. 이름     ");
+        System.out.println("        3. 전화번호    ");
+        System.out.println("        4. 주소 ");
+        int sel = sc.nextInt();
+
+        return sel;
+    }
+
+    //메뉴를 출력하고 작업번호를 입력받아 반환하는 메서드
+    private int displayMenu() {
+        System.out.println("== 회원 관리 프로그램 ==");
+        System.out.println("        1. 회원 정보 추가     ");
+        System.out.println("        2. 회원 정보 삭제     ");
+        System.out.println("        3. 회원 정보 수정     ");
+        System.out.println("        4. 전체 회원 정보 출력 ");
+        System.out.println("        5. 원하는 항목 수정 ");
+        System.out.println("        0. 작업 끝       ");
+
+        System.out.print("메뉴 번호 입력 >> ");
+        int sel = sc.nextInt();
+        return sel;
+    }
+
     public void select() {
         System.out.println("== 회원 전체 리스트 ==");
         //전체 리스트 받아오는 함수 호출
         List<MyMember> myMemberList = memberList();
         System.out.println("회원 아이디\t회원 비밀번호\t회원 이름\t회원 전화번호\t회원 주소");
         System.out.println("----------------------------------------------------------");
-
+        if(myMemberList.isEmpty()){
+            System.out.println("회원정보가 없습니다.4" +
+                    "");
+        }
         for(MyMember my : myMemberList) {
             String memId = my.getMemId();
             String memPass = my.getMemPass();
@@ -190,7 +316,6 @@ public class JDBCTest07 {
         }catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            if (rs!=null) try{rs.close();}catch (SQLException e) {}
             if (pstmt!=null) try{pstmt.close();}catch (SQLException e) {}
             if (conn!=null) try{conn.close();}catch (SQLException e) {}
         }
@@ -200,7 +325,8 @@ public class JDBCTest07 {
     private List<MyMember> memberList() {
         List<MyMember> list = new ArrayList<MyMember>();
         try{
-            conn = DBUtil.getConnection();
+            conn = DBUtil2.getConnection();
+//            conn = DBUtil.getConnection();
 
             String sql = "select * from MYMEMBER";
             pstmt = conn.prepareStatement(sql);
@@ -226,7 +352,7 @@ public class JDBCTest07 {
         return list;
     }
 
-    //아이디 중복체크
+    //아이디 중복체크 boolean값으로 반환하지않고 rs = pstmt.executeQuery();의 반환값만 보내서 체크하는것이 더 나을듯?
     public boolean idChk(String memId) {
         try {
             conn = DBUtil.getConnection();
@@ -316,6 +442,9 @@ class MyMember {
     private String memTel;
     private String memAddr;
 
+    public MyMember() {
+
+    }
     public MyMember(String memId, String memPass, String memName, String memTel, String memAddr) {
         this.memId = memId;
         this.memPass = memPass;
