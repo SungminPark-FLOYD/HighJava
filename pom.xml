@@ -11,6 +11,8 @@
     <modules>
         <module>JavaIOTest</module>
         <module>JDBCTest</module>
+        <module>JavaDocTest</module>
+        <module>MVCTest</module>
     </modules>
 
     <properties>

@@ -199,8 +199,7 @@ public class JDBCTest07 {
         System.out.println("회원 아이디\t회원 비밀번호\t회원 이름\t회원 전화번호\t회원 주소");
         System.out.println("----------------------------------------------------------");
         if(myMemberList.isEmpty()){
-            System.out.println("회원정보가 없습니다.4" +
-                    "");
+            System.out.println("회원정보가 없습니다.");
         }
         for(MyMember my : myMemberList) {
             String memId = my.getMemId();
