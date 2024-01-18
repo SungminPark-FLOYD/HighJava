@@ -13,6 +13,7 @@
         <module>JDBCTest</module>
         <module>JavaDocTest</module>
         <module>MVCTest</module>
+        <module>mybatisTest</module>
     </modules>
 
     <properties>

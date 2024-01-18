@@ -117,11 +117,15 @@ public class BoardController {
     }
 
     private void printDetailBoard(int boardNo) {
+        //상세 게시판 출력
+        BoardVo boardVo = service.detailBaord(boardNo);
+        if(boardVo == null) {
+            System.out.println("존재하지 않는 번호입니다.");
+            mainMenu();
+        }
         //조회수 먼저 올리기
         service.count(boardNo);
 
-        //상세 게시판 출력
-        BoardVo boardVo = service.detailBaord(boardNo);
         System.out.println(boardNo + "번글 내용");
         System.out.println("------------------------------------------------------------");
         System.out.println("- 제 목 : " + boardVo.getBoard_title());

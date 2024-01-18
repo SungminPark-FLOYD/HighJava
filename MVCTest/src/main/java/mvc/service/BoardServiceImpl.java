@@ -29,6 +29,9 @@ public class BoardServiceImpl implements IBoardService{
 
     @Override
     public BoardVo detailBaord(int boardNo) {
+        //조회수 증가작업이 실패했을때
+//        if(dao.count(boardNo) == 0) return null;
+
         return dao.detailBaord(boardNo);
     }
 
