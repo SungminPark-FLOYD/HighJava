@@ -3,6 +3,7 @@ package mvc.service;
 import mvc.vo.MemberVo;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Service객체는 DAO에 만들어진 메서드를 원하는 작업에 맞게 호출하여
@@ -45,4 +46,12 @@ public interface IMemberService {
      * @return 검색된 회원ID의 갯수
      */
     public int getMemberCount(String memId);
+
+
+    /**
+     * 회원 ID와 필드명 변경 데이터를 입력받아 쿼리를 보내는 메서드
+     * @param param
+     * @return
+     */
+    public int editMem(Map<String, String> param);
 }

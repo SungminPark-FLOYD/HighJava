@@ -4,6 +4,7 @@ import mvc.vo.MemberVo;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 실제 DB와 연결해서 SQL문을 수행하여 결과를 작성해서
@@ -45,4 +46,12 @@ public interface IMemberDao {
      * @return 검색된 회원ID의 갯수
      */
     public int getMemberCount(String memId);
+
+    /**
+     * 회원 ID와 필드명 변경 데이터를 입력받아 쿼리를 보내는 메서드
+     * @param param
+     * @return
+     */
+    public int editMem(Map<String, String> param);
+
 }

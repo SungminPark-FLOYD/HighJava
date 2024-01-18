@@ -4,7 +4,9 @@ import mvc.service.IMemberService;
 import mvc.service.MemberServiceImpl;
 import mvc.vo.MemberVo;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 public class MemberController {
@@ -16,7 +18,7 @@ public class MemberController {
     public MemberController() {
         sc = new Scanner(System.in);
         //service객체 생성
-        service = new MemberServiceImpl();
+        service = MemberServiceImpl.getInstance();
     }
     public static void main(String[] args) {
         new MemberController().mainMenu();
@@ -24,6 +26,7 @@ public class MemberController {
 
     //시작 메서드
     public void mainMenu() {
+
         while (true) {
             int sel = displayMenu();
             switch (sel) {
@@ -40,7 +43,7 @@ public class MemberController {
                     getAllMember();
                     break;
                 case 5:
-                   // selUpdate();
+                    editMem();
                     break;
                 case 0:
                     System.out.println("프로그램 종료...");
@@ -187,5 +190,72 @@ public class MemberController {
             System.out.println(memId + "\t" + memPass + "\t" + memName + "\t" + memTel + "\t" + memAddr);
         }
         System.out.println("----------------------------------------------------------");
+    }
+
+    private int editMenu() {
+        System.out.println("== 수정 항목 선택 ==");
+        System.out.println("        1. 비밀번호     ");
+        System.out.println("        2. 이름     ");
+        System.out.println("        3. 전화번호    ");
+        System.out.println("        4. 주소 ");
+        int sel = sc.nextInt();
+        sc.nextLine();
+
+        return sel;
+    }
+
+    private void editMem() {
+        Map<String, String> param = new HashMap<>();
+        int cnt = 0;
+        System.out.println("== 회원 정보 수정 페이지 ==");
+        getAllMember();
+        System.out.println("수정할 회원 아이디를 입력하세요");
+        //회원아이디 중복 체크
+        String memId = null;
+        while (true) {
+            System.out.print("회원 아이디 >> ");
+            memId = sc.next();
+            cnt = service.getMemberCount(memId);
+            if(cnt > 0) {
+                System.out.println("존재하는 아이디 입니다.");
+                break;
+            }else System.out.println("존재하지 않는 아이디입니다.");
+        }
+        param.put("mem_id", memId);
+        String data;
+        int sel = editMenu();
+        if(sel == 1) {
+            System.out.print("수정할 비밀번호를 입력하세요 >>");
+            data = sc.next();
+            param.put("data", data);
+            param.put("filedName", "mem_pass");
+        }
+        else if(sel == 2){
+            System.out.print("수정할 이름을 입력하세요 >>");
+            String memName = sc.next();
+            param.put("data", memName);
+            param.put("filedName", "mem_name");
+        }
+        else if(sel == 3){
+            System.out.print("수정할 전화번호를 입력하세요 >>");
+            String memTel = sc.next();
+            param.put("data", memTel);
+            param.put("filedName", "mem_tel");
+        }
+        else if(sel == 4) {
+            System.out.print("수정할 주소를 입력하세요 >>");
+            String memAddr = sc.nextLine();
+            param.put("data", memAddr);
+            param.put("filedName", "mem_addr");
+        }
+        else {
+            System.out.println("잘못된번호입니다.");
+            return;
+        }
+
+        cnt = service.editMem(param);
+
+        if(cnt > 0) System.out.println("회원업데이트완료!!");
+        else System.out.println("작업 실패~~~");
     }
 }

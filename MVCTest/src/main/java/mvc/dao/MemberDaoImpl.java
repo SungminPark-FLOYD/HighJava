@@ -3,19 +3,26 @@ package mvc.dao;
 import mvc.vo.MemberVo;
 import util.DBUtil3;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class MemberDaoImpl implements IMemberDao{
+    private static MemberDaoImpl instance = null;
+
+    private MemberDaoImpl() {}
+
+    public static MemberDaoImpl getInstance() {
+        if(instance == null) instance = new MemberDaoImpl();
+        return instance;
+    }
     @Override
     public int insertMember(MemberVo memVo) {
         int cnt = 0;
         Connection conn = null;
         PreparedStatement pstmt = null;
+
 
         try {
             conn = DBUtil3.getConnection();
@@ -155,4 +162,32 @@ public class MemberDaoImpl implements IMemberDao{
 
         return cnt;
     }
+
+    @Override
+    public int editMem(Map<String, String> param) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        int cnt = 0;
+
+        try {
+            conn = DBUtil3.getConnection();
+
+            String sql = " update MYMEMBER set " +
+                       param.get("filedName") + " = ? where MEM_ID = ? ";
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, param.get("data"));
+            pstmt.setString(2, param.get("mem_id"));
+            cnt = pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (pstmt!=null) try{pstmt.close();}catch (SQLException e) {}
+            if (conn!=null) try{conn.close();}catch (SQLException e) {}
+        }
+
+        return cnt;
+    }
+
+
 }
