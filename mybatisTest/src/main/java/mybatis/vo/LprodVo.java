@@ -2,15 +2,15 @@ package mybatis.vo;
 
 public class LprodVo {
 
-    private String lprod_id;
+    private int lprod_id;
     private String lprod_gu;
     private String lprod_nm;
 
-    public String getLprod_id() {
+    public int getLprod_id() {
         return lprod_id;
     }
 
-    public void setLprod_id(String lprod_id) {
+    public void setLprod_id(int lprod_id) {
         this.lprod_id = lprod_id;
     }
 

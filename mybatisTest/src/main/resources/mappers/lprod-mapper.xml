@@ -19,4 +19,47 @@
     <insert> INSERT 구문... </insert>
     ...
 -->
+<!--
+    * id 속성 ==> 실행할 태그를 JAVA소스에서 호출할 때 사용되는 이름으로
+                  <mapper>태그의 namespace속성과 연결해서 사용한다.
+                  (예 : "lprod.insertLprod")
+    * parameterType속성 ==> 작성한 SQL문에 사용될 데이터가 들어있는 객체를 지정한다.
+            (보통 VO클래스, Java의 기본 자료형 이름, Map객체 등이 사용된다.)
+            (VO클래스 등을 기술할 때는 해당 클래스의 전체이름을 기술해야 한다.)
+            (이 속성에는<typeAlias>태그에서 지정한 alias속성값을 사용할 수 있다)
+
+-->
+    <!--    <insert id="insertLprod" parameterType="mybatis.vo.LprodVo">-->
+    <insert id="insertLprod" parameterType="LprodVo">
+        insert into LPROD (lprod_id, lprod_gu, lprod_nm)
+        VALUES (#{lprod_id},#{lprod_gu},#{lprod_nm})
+    </insert>
+
+    <update id="updateLprod" parameterType="LprodVo">
+        update LPROD set LPROD_ID = #{lprod_id}, LPROD_GU = #{lprod_gu}, LPROD_NM = #{lprod_nm}
+        where LPROD_GU = #{lprod_gu}
+    </update>
+
+<!--    parameterType 속성에 설장되는 값이 단일 값이면 SQL 문에 이 값을 나타내느 ㄴ변수는
+        특별히 이름이 정해지지 않았다
+-->
+    <delete id="deleteLprod" parameterType="String">
+        delete from LPROD
+        where LPROD_GU = #{lprod_gu}
+    </delete>
+
+<!--
+    * resultType 속성 ==> select문을 처리한 결과를 저장할 VO클래스나 JAVA의 기본 자료형,
+        Map객체를 지정할 수 있다.
+        select문을 처리한 결과가 여러개의 레코드이면 'selectList'메서드를 이용하여
+        호출한다. 그러면 결고가 데이터를 자동으로 list에 담아서 반환한다.
+        그래서 결과가 여러개일 경우에도 이 resultType속성에는 1개의 레코드가 저장될 클래스나 자료형 이름을 지정하면 된다.
+-->
+    <select id="getAllLprod" resultType="LprodVo">
+        select * from LPROD
+    </select>
+
+    <select id="getLprod" parameterType="String" resultType="LprodVo">
+        select * from LPROD where LPROD_GU = #{lprod_gu}
+    </select>
 </mapper>
